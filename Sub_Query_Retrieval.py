@@ -24,29 +24,27 @@ os.environ['GROQ_API_KEY'] = os.getenv("GROQ_API_KEY") or "gsk_SeLHoHPde7f5XIxIV
 from pathway.udfs import ExponentialBackoffRetryStrategy
 llm = llms.LiteLLMChat(model="groq/meta-llama/llama-4-scout-17b-16e-instruct", retry_strategy=ExponentialBackoffRetryStrategy(max_retries=2), temperature = 0.0)
 
+def initiate_chat(user_id:str, query:str):
+  system_prompt = """
+  You are an AI language model assistant.
+  Your task is to generate five different versions of the given user question to retrieve relevant documents from a vector database.
+  By generating multiple perspectives on the user question, your goal is to help the user overcome some of the limitations of the distance-based similarity search.
+  Provide these alternative questions separated by newlines.
+  Output only the generated queries not including any other text.
+  """
+  messages = pw.debug.table_from_rows(
+      schema = pw.schema_from_types(user_id = str, questions=list[dict]),
+      rows=[
+          (
+              f"{user_id}",
+              [
+                  {"role": "system", "content": system_prompt},
+                  {"role": "user", "content": f"{query}"},
+              ],
+          )
+      ],
+  )
 
-
-system_prompt = """
-You are an AI language model assistant.
-Your task is to generate five different versions of the given user question to retrieve relevant documents from a vector database.
-By generating multiple perspectives on the user question, your goal is to help the user overcome some of the limitations of the distance-based similarity search.
-Provide these alternative questions separated by newlines.
-Output only the generated queries not including any other text.
-"""
-
-
-messages = pw.debug.table_from_rows(
-    schema = pw.schema_from_types(user_id = str, questions=list[dict]),
-    rows=[
-        (
-            "user1",
-            [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "What are the facilities in IIT Indore"},
-            ],
-        )
-    ],
-)
 
 responses = messages.select(user_id = pw.this.user_id, result=llm(pw.this.questions))
 
