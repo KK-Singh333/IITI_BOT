@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1WtsaMy8BiSmkCTAtqOkuDuN6-O2_pWIz
 """
 
-# Radhey Radhey
+
 !pip install pathway pathway[xpack-llm] litellm
 
 !pip install pathway
