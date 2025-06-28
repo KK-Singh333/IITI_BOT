@@ -1,6 +1,5 @@
 # Radhey Radhey
-!pip install pathway pathway[xpack-llm] litellm
-
+# Libraries Required - !pip install pathway pathway[xpack-llm] litellm
 import pathway as pw
 from pathway.xpacks.llm import llms, embedders
 import os
