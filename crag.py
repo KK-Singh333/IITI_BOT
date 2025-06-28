@@ -336,7 +336,7 @@ class CRAG(SummaryQuestionAnswerer):
         """Answer a question based on the available information."""
         #pw_ai_queries will be connected to a mongodB database, format: QueryId |  User ID  | Query (str)
         #pw_history_table will contain a past history of user chats, format: User ID | History(pw.Json)
-        pw_ai_queries+=pw_ai_queries.join(pw_history_table,pw_ai_queries.userid==pw_history_table.userid)
+        pw_ai_queries+=pw_ai_queries.join_left(pw_history_table,pw_ai_queries.userid==pw_history_table.userid)
         pw_ai_queries+=pw_ai_queries.select(context=self.provide_context(pw.this.query,pw.this.docs))
         pw_ai_queries+=pw_ai_queries.select(subqueries=self.create_subquery(pw.this.query))
         pw_ai_queries+=pw_ai_queries.select(refined_context=self.refine_document(pw.this.context))
