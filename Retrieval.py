@@ -1,5 +1,5 @@
 # Radhey Radhey
-# Libraries Required - !pip install pathway pathway[xpack-llm] litellm ast
+# Libraries Required - !pip install pathway pathway[xpack-llm] litellm
 import pathway as pw
 from pathway.xpacks.llm import llms, embedders
 import os
@@ -37,6 +37,7 @@ def split_lines(text: str) -> list[str]:
     return text.splitlines()
 
 class Retriever():
+
   def __init__(self, model:str = model, system_prompt:str = system_prompt_retriever, path_csv:str = path):
     # Setting llm
     self.llm = llms.LiteLLMChat(model=model, retry_strategy=ExponentialBackoffRetryStrategy(max_retries=2))
@@ -67,21 +68,14 @@ class Retriever():
     # Include other columns you need
     ).filter(pw.this.embedding.is_not_none())
 
-  def __call__(self, user_id:str, user_prompt:str) -> pw.Table[pw.schema_from_types(doc_id = str, chunks = str, url = str)]:
-    messages = pw.debug.table_from_rows(
-    schema = pw.schema_from_types(user_id = str, questions=list[dict]),
-    rows=[
-          (
-            f"{user_id}",
-            [
-                {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": f"{user_prompt}"},
-            ],
-          )
-        ],
-      )
+  @pw.table_transformer
+  def __call__(self, queries:pw.Table):
+    @pw.udf
+    def query_parser(args) -> list[dict]:
+      return [{"role": "system", "content": self.system_prompt}, {"role": "user", "content": f"{args}"}]
 
-    responses = messages.select(user_id = pw.this.user_id, result = self.llm(pw.this.questions))
+    query_table = queries.select(user_id = pw.this.user_id, questions = query_parser(pw.this.queries))
+    responses = query_table.select(user_id = pw.this.user_id, result = self.llm(pw.this.questions))
 
     split_table = responses.select(
     user_id=pw.this.user_id,
@@ -90,6 +84,7 @@ class Retriever():
     response = split_table.flatten(pw.this.questions)
 
     response += response.select(embedding=self.embedder(pw.this.questions))
+    # return response
 
     doc_index = KNNIndex(
     self.vector_store.embedding,
@@ -102,10 +97,26 @@ class Retriever():
     results = doc_index.get_nearest_items(
     response.embedding,
     k=3  # top 5 most similar documents
-    ).select(doc_id = pw.this.doc_id, chunks = pw.this.chunks, url = pw.this.url)
+    ).select(user_id = response.user_id, doc_id = pw.this.doc_id, chunks = pw.this.chunks, url = pw.this.url)
 
+    results = results.groupby(pw.this.user_id).reduce(pw.this.user_id,chunks = pw.reducers.tuple(pw.this.chunks))
     return results
 
-# # Lets try once
+# Lets try once
+# query = pw.debug.table_from_rows(
+#     schema = pw.schema_from_types(user_id = str, queries=str),
+#     rows = [
+#         (
+#             "1",
+#             "What are the facilities in IIT Indore"
+#         ),
+#         (
+#             "2",
+#             "Who is Director of IIT Indore"
+#         )
+#     ]
+# )
+
 # custom_retriever = Retriever()
-# pw.debug.compute_and_print(custom_retriever("1", "What are the facilities in IIT Indore?"))
+# pw.debug.compute_and_print(custom_retriever(queries=query))
+# # custom_retriever(queries=query).typehints()
