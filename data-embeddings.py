@@ -4,6 +4,7 @@ from sentence_transformers import SentenceTransformer
 import numpy as np
 from pathway.xpacks.llm.splitters import RecursiveSplitter
 
+# schema for data
 class IITIWebSchema(pw.Schema):
     row_id: int
     url: str
