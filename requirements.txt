@@ -1,0 +1,10 @@
+requests
+beautifulsoup4
+PyPDF2
+pandas
+sentence-transformers>=2.6.1
+tqdm
+pathway
+pathway[xpack-llm]>=0.7.1
+numpy>=1.24.0
+python-dotenv

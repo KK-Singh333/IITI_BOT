@@ -51,9 +51,9 @@ MAX_WORKERS = 100
 PDF_TIMEOUT = 45
 HTML_TIMEOUT = 25
 MAX_RETRIES = 3
-BACKOFF_FACTOR = 1.5
+BACKOFF_FACTOR = 0.3
 MAX_CONTENT_SIZE = 20 * 1024 * 1024  # 20MB
-RATE_LIMIT_DELAY = 0.5  # 100ms between requests per domain
+RATE_LIMIT_DELAY = 0.4  # 100ms between requests per domain
 MAX_URLS = 60000  # NEW: Maximum number of URLs to scrape
 DOMAIN_DELAYS = {}
 
@@ -351,7 +351,7 @@ def run_until_all_scraped(input_csv: str, output_csv: str):
     if not os.path.exists(output_csv):
         with open(output_csv, 'w', encoding='utf-8', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(["url", "title", "keywords", "description", "body_text", "error", "status"])
+            writer.writerow(["row_id", "url", "title", "keywords", "description", "body_text", "error", "status"])
 
     #load processed links
     processed_urls = set()
@@ -418,18 +418,23 @@ def run_until_all_scraped(input_csv: str, output_csv: str):
         total_processed += num_processed
         total_new_links += num_new_links
 
-        # Save results incrementally
+        # Save result
         with open(output_csv, 'a', encoding='utf-8', newline='') as f:
             writer = csv.writer(f)
-            for result in results:
+            current_row_id = len(processed_urls) - len(urls_to_process)
+            for idx, result in enumerate(results):
+                def safe_str(s):
+                    return s.encode('utf-8', 'replace').decode('utf-8') if isinstance(s, str) else s
+
                 writer.writerow([
-                    result['url'],
-                    result['title'],
-                    result['keywords'],
-                    result['description'],
-                    result['body_text'],
-                    result['error'],
-                    result['status']
+                    current_row_id + idx + 1,
+                    safe_str(result['url']),
+                    safe_str(result['title']),
+                    safe_str(result['keywords']),
+                    safe_str(result['description']),
+                    safe_str(result['body_text']),
+                    safe_str(result['error']),
+                    safe_str(result['status'])
                 ])
 
         # Update processed URLs
