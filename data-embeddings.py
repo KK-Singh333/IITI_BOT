@@ -35,8 +35,8 @@ class IITIWebSchema(pw.Schema):
 init_table = pw.io.csv.read(
     "iiti_data_merged_final.csv",
     schema=IITIWebSchema,
-    mode="streaming",
-    autocommit_duration_ms=600000
+    mode="static",
+    # autocommit_duration_ms=600000
 )
 
 # Optionally check for non-empty body_text or metadata instead
@@ -83,7 +83,7 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 # UDF to generate embeddings
 @pw.udf
 def batch_embedding(texts: list[str]) -> list[list[float]]:
-    return model.encode(texts).tolist()
+    return model.encode(texts) #.tolist()
 
 # Add embeddings to each chunk
 embedded = flattened.select(
