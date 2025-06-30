@@ -50,7 +50,7 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # UDF to generate embeddings
 @pw.udf
-def batch_embedding(texts: list[str]) -> list[list[float]]:
+def batch_embedding(texts: list[str]) -> list[float]:
     return model.encode(texts) #.tolist()
 
 # Add embeddings to each chunk
