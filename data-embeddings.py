@@ -23,7 +23,7 @@ init_table = pw.io.csv.read(
     # autocommit_duration_ms=600000
 )
 
-# Optionally check for non-empty body_text
+# check for non-empty body_text
 final_table = init_table.filter(pw.this.body_text != "")
 
 # Setup RecursiveSplitter
@@ -34,7 +34,7 @@ splitter = RecursiveSplitter(
     model_name="gpt-4o-mini",
 )
 
-# Apply splitter 
+# Apply splitter
 chunked = final_table.select(
     row_id=pw.this.row_id,
     url=pw.this.url,
@@ -48,22 +48,22 @@ flattened = chunked.flatten(pw.this.chunks)
 # Load your model
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
-# UDF to generate embeddings
-@pw.udf
-def batch_embedding(texts: list[str]) -> list[float]:
-    return model.encode(texts) #.tolist()
+def embed_chunk(text: str) -> list[float]:
+    """Returns a 1D embedding vector for a single text chunk"""
+    # Process single text and return 1D list
+    return model.encode(text).tolist()
 
 # Add embeddings to each chunk
 embedded = flattened.select(
     row_id=pw.this.row_id,
     chunk=pw.this.chunks,
-    embedding=batch_embedding(pw.this.chunks),  # This batches internally
+    embedding=embed_chunk(pw.this.chunks),  # This batches internally
     url=pw.this.url,
 )
 
 pw.io.csv.write(
     table=embedded,
-    filename="data/embedded_data.csv"
+    filename="embedded_data_1.csv"
 )
 
 pw.run()
