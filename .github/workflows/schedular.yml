@@ -1,10 +1,9 @@
-name: Run Scraper Every 7 Days
+name: Run IITI Scraper Every 7 Days
 
 on:
   schedule:
-    # Every 7 days (at midnight on Sundays, UTC)
-    - cron: '0 0 * * 0'  # Sunday 00:00 UTC
-  workflow_dispatch:  # Optional: manual trigger button
+    - cron: '0 0 * * 0'  # Every Sunday at 00:00 UTC
+  workflow_dispatch:     # Manual trigger option
 
 jobs:
   run-scraper:
@@ -17,11 +16,11 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'  # or your required version
+        python-version: '3.10'
 
-    - name: Install Dependencies
+    - name: Install Python dependencies
       run: |
-        pip install -r requirements.txt
+        pip install beautifulsoup4 requests PyPDF2 pandas tqdm pathway
 
-    - name: Run Scraper
+    - name: Run the scraper
       run: python data/scraper.py
