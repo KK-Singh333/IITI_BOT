@@ -1,0 +1,27 @@
+name: Run Scraper Every 7 Days
+
+on:
+  schedule:
+    # Every 7 days (at midnight on Sundays, UTC)
+    - cron: '0 0 * * 0'  # Sunday 00:00 UTC
+  workflow_dispatch:  # Optional: manual trigger button
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'  # or your required version
+
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run Scraper
+      run: python data/scraper.py

@@ -357,7 +357,7 @@ def run_until_all_scraped(input_csv: str, output_csv: str):
     processed_urls = set()
     if os.path.exists(output_csv):
         try:
-            for chunk in pd.read_csv(output_csv, usecols=['url'], chunksize=10000):
+            for chunk in pd.read_csv(output_csv, usecols=['url'], chunksize=5000):
                 processed_urls.update(chunk['url'].dropna().astype(str).unique())
             logger.info(f"Loaded {len(processed_urls)} processed URLs from output")
         except Exception as e:
