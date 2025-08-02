@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo.png" alt="IITIbot Logo" width="150" />
+  <img src="./assets/iiti_logo.png" alt="IITIbot Logo" width="150" />
 </p>
 
 # 🤖 IITIbot — RAG Chatbot for IIT Indore
@@ -129,8 +129,7 @@ cd iitibot
 
 ---
 
-
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
