@@ -480,9 +480,9 @@ def main():
     """
     Main function to orchestrate the entire data pipeline using pandas.
     """
-    web_input_csv = "/content/Webpage_Links.csv"
+    web_input_csv = "cleaned_urls_list.csv"
     web_output_csv = "output_data.csv"
-    local_zip_path = "/content/EMAIL_PDFs.zip"
+    local_zip_path = "EMAIL_PDFs.zip"
     local_data_dir = "local_data"
     final_output_csv = "final_integrated_data.csv"
 
