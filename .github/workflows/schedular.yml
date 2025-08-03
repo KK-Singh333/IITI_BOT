@@ -20,7 +20,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip Install beautifulsoup4 requests PyPDF2 pandas tqdm pathway
+        pip install beautifulsoup4 requests PyPDF2 pandas tqdm pathway
 
     - name: Run the scraper
       run: python data/scraper.py
