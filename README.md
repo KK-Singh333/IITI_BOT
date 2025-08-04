@@ -68,13 +68,13 @@ Built using **Pathway** and **CRAG** for robust RAG pipeline handling, IITIbot i
 git clone https://github.com/KK-Singh333/IITI_BOT.git
 cd iitibot
 ```
-### 1. Run with Docker (The Backend)
+### 2. Run with Docker (The Backend)
 ```
 cd backend
 docker compose up --build
 
 ```
-### 2. Run the frontend
+### 3. Run the frontend
 ```
 cd frontend/frontend
 npm run dev
