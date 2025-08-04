@@ -13,7 +13,6 @@ services:
     container_name: pathway_app
     ports:
       - "8000:8000"
-      - "8003:8003"
     depends_on:
       - mongodb
     restart: always
