@@ -30,7 +30,7 @@ users_collection = database['users']
 pending_users_collection = database['pending_users']
 
 
-SECRET_KEY = "Gunge Ne Gana Gaya aur Andhe Ne Movie Dekhi"
+SECRET_KEY = "Epsilon"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -96,7 +96,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 
 def send_otp_email(receiver_email, otp):
     message = Mail(
-    from_email='khushm965@gmail.com',
+    from_email='<Gmail of your account>',
     to_emails=receiver_email,
     subject='OTP FOR IITI BOT',
     html_content=f'<strong>Your OTP is {otp}</strong>')
