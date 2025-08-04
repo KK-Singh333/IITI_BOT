@@ -1,0 +1,25 @@
+
+version: "3.8"
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+
+
+  pathway_app:
+    build: .
+    container_name: pathway_app
+    ports:
+      - "8000:8000"
+      - "8003:8003"
+    depends_on:
+      - mongodb
+    restart: always
+    volumes:
+      - ./data:/data
+    environment:
+      - TAVILY_API_KEY=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
+      - GROQ_API_KEY=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
+      - SENDGRID_API_KEY=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

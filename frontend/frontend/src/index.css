@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+<body className="m-0">
+
+
+
+@font-face {
+  font-family: poppins;
+  src: url('./assets/fonts/Poppins-Regular.ttf');
+}
+
+@import "tailwindcss";
+
+@theme{
+  --font-poppins:poppins, 'mono'
+}
+
+@layer utilities {
+  @keyframes scroll-up {
+    0%   { transform: translateY(0%); }
+    100% { transform: translateY(-100%); }
+  }
+
+  .animate-scrollUp {
+    animation: scroll-up 10s linear infinite;
+  }
+}
